@@ -35,6 +35,32 @@ class ProductItem {
     }
 }
 
+class ComponentAttr {
+    constructor(attrName, attrValue) {
+        this.name = attrName;
+        this.value = attrValue;
+    }
+}
+
+class Component {
+    constructor(renderHookId) {
+        this.hookId = renderHookId;
+    }
+
+    createRootelement(tag, cssClasses, attributes) {
+        const rootElement = document.createElement(tag);
+        if (cssClasses) {
+            rootElement.className = cssClasses;
+        }
+        if (attributes && attributes.length > 0) {
+            for (const attr of attributes) {
+                rootElement.setAttribute(attr.name, attr.value);
+            }
+        }
+        document.getElementById(this.hookId).append(rootElement);
+        return this.rootElement;
+    }
+}
 
 class ShopingCart {
     items = [];
@@ -53,12 +79,11 @@ class ShopingCart {
         this.cartItems = updateItems;
     }
     render() {
-        const cartEl = document.createElement('section');
+        const cartEl = this.createElement('section', 'cart');
         cartEl.innerHTML = `
            <h2>Total: \$${0}</h2>
            <button>Order Now!</button>
         `;
-        cartEl.classList = 'cart';
         this.totalOutput = cartEl.querySelector('h2');
         return cartEl;
     }
