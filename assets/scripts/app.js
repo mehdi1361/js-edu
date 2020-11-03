@@ -1,9 +1,9 @@
 class Product {
-    constructor(title, image, price, description) {
+    constructor(title, image, description, price) {
         this.title = title;
         this.imageUrl = image;
-        this.price = price;
         this.description = description;
+        this.price = price;
     }
 }
 
@@ -11,9 +11,8 @@ class ProductItem {
     constructor(product) {
         this.product = product;
     }
-    addToCard() {
-        console.log(this.product);
-        App.addToCard(this.product);
+    addButton() {
+        App.addProductToCart(this.product);
     }
     render() {
         const prodEl = document.createElement('li');
@@ -28,61 +27,26 @@ class ProductItem {
                     <button>Add To Cart</button>
                 </div>
             </div>
-            `;
-        const addCardButton = prodEl.querySelector('button');
-        addCardButton.addEventListener('click', this.addToCard.bind(this));
+        `;
+        const addCreateButton = prodEl.querySelector('button');
+        addCreateButton.addEventListener('click', this.addButton.bind(this)); 
         return prodEl;
-    }
-}
-
-class ComponentAttr {
-    constructor(attrName, attrValue) {
-        this.name = attrName;
-        this.value = attrValue;
-    }
-}
-
-class Component {
-    constructor(renderHookId) {
-        this.hookId = renderHookId;
-    }
-
-    createRootelement(tag, cssClasses, attributes) {
-        const rootElement = document.createElement(tag);
-        if (cssClasses) {
-            rootElement.className = cssClasses;
-        }
-        if (attributes && attributes.length > 0) {
-            for (const attr of attributes) {
-                rootElement.setAttribute(attr.name, attr.value);
-            }
-        }
-        document.getElementById(this.hookId).append(rootElement);
-        return this.rootElement;
     }
 }
 
 class ShopingCart {
     items = [];
-    set cartItems(value) {
-        this.items = value;
-        this.totalOutput.innerHTML = `<h2>Total: \$${this.totalAmount.toFixed(2)}</h2>`;
 
-    }
-    get totalAmount() {
-        const sum = this.items.reduce((prevValue, curItem) => prevValue + curItem.price, 0);
-        return sum;
-    }
     addProduct(product) {
-        const updateItems = [...this.items];
-        updateItems.push(product);
-        this.cartItems = updateItems;
+        this.items.push(product);
+        this.totalOutput.innerHTML = `<h2>Total: \$${1}</h2>`;
     }
     render() {
-        const cartEl = this.createElement('section', 'cart');
+        const cartEl = document.createElement('section');
+        cartEl.className = 'cart';
         cartEl.innerHTML = `
-           <h2>Total: \$${0}</h2>
-           <button>Order Now!</button>
+            <h2>Total: \$${0}</h2>
+            <button>Order Now!!!</button>
         `;
         this.totalOutput = cartEl.querySelector('h2');
         return cartEl;
@@ -92,50 +56,49 @@ class ShopingCart {
 class ProductList {
     products = [
         new Product(
-            "Halo",
+            "Halo", 
             "https://cdn.mos.cms.futurecdn.net/wyMSsx4wbLYEtP8qEEkToD-970-80.jpg.webp", 
-            19.99, 
+            8.99,
             "first person shooter game"
         ),
         new Product(
-            "Spaceship",
-            "https://media.comicbook.com/2020/10/billy-shotgun-01-1--1241370.jpeg?auto=webp&width=1200&height=675&crop=1200:675,smart",
-            29.99, 
+            "Spaceship", 
+            "https://media.comicbook.com/2020/10/billy-shotgun-01-1--1241370.jpeg?auto=webp&width=1200&height=675&crop=1200:675,smart", 
+            19.99,
             "strategy game"
         )
     ]
-    constructor() { }
+
     render() {
-        
         const prodList = document.createElement('ul');
         prodList.className = 'product-list';
-        this.products.forEach(prod => {  
-            const pr = new ProductItem(prod);
-            prodList.append(pr.render());
+
+        this.products.forEach(prod =>{
+            const prdEl = new ProductItem(prod);
+            prodList.append(prdEl.render());
         });
         return prodList;
     }
 }
-
 class Shop {
     render() {
+        this.cart = new ShopingCart();
+        console.log("shop class cart>>>>", this.cart);
+        const prodList = new ProductList();
         const renderHook = document.getElementById('app');
-        this.cart = new ShopingCart();        
-        const prodShow = new ProductList();
-
         renderHook.append(this.cart.render());
-        renderHook.append(prodShow.render());
+        renderHook.append(prodList.render());
     }
 }
-
 class App {
     static init() {
         const shop = new Shop();
         shop.render();
-        this.cart = shop.cart
+        this.cart = shop.cart;
     }
-    static addToCard(product) {
-        this.cart.addProduct(product)
+
+    static addProductToCart(product) {
+        this.cart.addProduct(product);
     }
 }
 
