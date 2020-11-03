@@ -1,5 +1,5 @@
 class Product {
-    constructor(title, image, description, price) {
+    constructor(title, image, price, description) {
         this.title = title;
         this.imageUrl = image;
         this.description = description;
@@ -36,11 +36,26 @@ class ProductItem {
 
 class ShopingCart {
     items = [];
+    set cartItems(values) {
+        this.items = values;
+        this.totalOutput.innerHTML = `<h2>Total: \$${this.sumPrice}</h2>`;
+    }
+    get sumPrice() {
+        const sum = this.items.reduce(
+            (prev,curItem) =>{
+                return prev + curItem.price;
+            }, 
+            0
+        );
+        return sum;
+    }
 
     addProduct(product) {
-        this.items.push(product);
-        this.totalOutput.innerHTML = `<h2>Total: \$${1}</h2>`;
+        const updateTimes = [...this.items];
+        updateTimes.push(product);
+        this.cartItems = updateTimes;
     }
+    
     render() {
         const cartEl = document.createElement('section');
         cartEl.className = 'cart';
